@@ -40,6 +40,11 @@
   <input type="text" id="key" placeholder="Your API Key">
   <input type="text" id="secret" placeholder="Your Secret Key">
   <input type="text" id="path" placeholder="Path (e.g., /v1/rates)">
+  <input type="text" id="body" placeholder="Request Body (e.g., {})">
+  <select id="method">
+    <option value="GET">GET</option>
+    <option value="POST">POST</option>
+  </select>
   <button onclick="generate()">Generate Credentials</button>
 
   <div class="result" id="output" style="display:none;">
@@ -47,11 +52,8 @@
     <p><strong>Signature:</strong> <span id="sig-out"></span></p>
     <button onclick="copyToClipboard()" style="background: #28a745;">Copy Signature</button>
   </div>
-  <select id="method">
-    <option value="GET">GET</option>
-    <option value="POST">POST</option>
-  </select>
-  <input type="text" id="body" placeholder="Request Body (e.g., {})">
+
+
 
   <script>
     function copyToClipboard() {
