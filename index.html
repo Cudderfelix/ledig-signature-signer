@@ -65,11 +65,14 @@
     function generate() {
       const secret = document.getElementById('secret').value;
       const path = document.getElementById('path').value;
-      const method = document.getElementById('method').value; // New: Get from dropdown
-      const body = document.getElementById('body').value;    // New: Get from input
-      const timestamp = Math.floor(Date.now() / 1000).toString();
+      const method = document.getElementById('method').value;
 
-      // Construct the payload dynamically
+      // CRITICAL: Remove all whitespace from the body to ensure it matches 
+      // what the proxy server sends to your backend
+      const rawBody = document.getElementById('body').value;
+      const body = rawBody.replace(/\s+/g, '');
+
+      const timestamp = Math.floor(Date.now() / 1000).toString();
       const payload = `${timestamp}.${method}.${path}.${body}`;
 
       const hash = CryptoJS.HmacSHA256(payload, secret);
