@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Ledig API Signature Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 500px;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 8px;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .result {
+      background: #f4f4f4;
+      padding: 10px;
+      margin-top: 20px;
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Ledig API Signature Generator</h2>
+  <input type="text" id="key" placeholder="Your API Key">
+  <input type="text" id="secret" placeholder="Your Secret Key">
+  <input type="text" id="path" placeholder="Path (e.g., /v1/rates)">
+  <button onclick="generate()">Generate Credentials</button>
+
+  <div class="result" id="output" style="display:none;">
+    <p><strong>Timestamp:</strong> <span id="ts-out"></span></p>
+    <p><strong>Signature:</strong> <span id="sig-out"></span></p>
+  </div>
+
+  <script>
+    function generate() {
+      const secret = document.getElementById('secret').value;
+      const path = document.getElementById('path').value;
+      const ts = Math.floor(Date.now() / 1000).toString();
+
+      // Signature logic: SHA256(timestamp + path)
+      const message = ts + path;
+      const sig = CryptoJS.HmacSHA256(message, secret).toString();
+
+      document.getElementById('ts-out').innerText = ts;
+      document.getElementById('sig-out').innerText = sig;
+      document.getElementById('output').style.display = 'block';
+    }
+  </script>
+</body>
+
+</html>
