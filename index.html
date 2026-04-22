@@ -58,21 +58,15 @@
     function generate() {
       const secret = document.getElementById('secret').value;
       const path = document.getElementById('path').value; // e.g., /v1/rates
+      const method = document.getElementByID('method').value;
+      const body = document.getElementByID('body').value;
       const timestamp = Math.floor(Date.now() / 1000).toString();
-      const method = "GET";
-      const body = ""; // For GET requests, body is usually empty
 
       // 1. Build the payload exactly as the server expects
       const payload = `${timestamp}.${method}.${path}.${body}`;
 
-      // 2. Generate HMAC SHA256 (in WordArray format)
       const hash = CryptoJS.HmacSHA256(payload, secret);
-
-      // 3. Convert to Base64 (Crucial step!)
-      const signature = CryptoJS.enc.Base64.stringify(hash);
-
-      // 4. Prepend the version prefix
-      const finalSignature = "v1=" + signature;
+      const signature = "v1=" + CryptoJS.enc.Base64.stringify(hash);
 
       document.getElementById('ts-out').innerText = timestamp;
       document.getElementById('sig-out').innerText = finalSignature;
