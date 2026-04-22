@@ -45,20 +45,37 @@
   <div class="result" id="output" style="display:none;">
     <p><strong>Timestamp:</strong> <span id="ts-out"></span></p>
     <p><strong>Signature:</strong> <span id="sig-out"></span></p>
+    <button onclick="copyToClipboard()" style="background: #28a745;">Copy Signature</button>
   </div>
 
   <script>
+    function copyToClipboard() {
+      const sig = document.getElementByID('sig-out').innerText;
+      navigator.clipboard.writeText(sig).then(() => {
+        alert('Signature copied to clipboard!');
+      });
+    }
     function generate() {
       const secret = document.getElementById('secret').value;
-      const path = document.getElementById('path').value;
-      const ts = Math.floor(Date.now() / 1000).toString();
+      const path = document.getElementById('path').value; // e.g., /v1/rates
+      const timestamp = Math.floor(Date.now() / 1000).toString();
+      const method = "GET";
+      const body = ""; // For GET requests, body is usually empty
 
-      // Signature logic: SHA256(timestamp + path)
-      const message = ts + path;
-      const sig = CryptoJS.HmacSHA256(message, secret).toString();
+      // 1. Build the payload exactly as the server expects
+      const payload = `${timestamp}.${method}.${path}.${body}`;
 
-      document.getElementById('ts-out').innerText = ts;
-      document.getElementById('sig-out').innerText = sig;
+      // 2. Generate HMAC SHA256 (in WordArray format)
+      const hash = CryptoJS.HmacSHA256(payload, secret);
+
+      // 3. Convert to Base64 (Crucial step!)
+      const signature = CryptoJS.enc.Base64.stringify(hash);
+
+      // 4. Prepend the version prefix
+      const finalSignature = "v1=" + signature;
+
+      document.getElementById('ts-out').innerText = timestamp;
+      document.getElementById('sig-out').innerText = finalSignature;
       document.getElementById('output').style.display = 'block';
     }
   </script>
